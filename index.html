@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0072)file:///Users/aqfinanzas/Downloads/calculadora-proyeccion-rcr%20(1).html -->
+<!-- saved from url=(0080)file:///Users/aqfinanzas/Downloads/Calculadora_de_inversion_Excedente%20(1).html -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,7 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="./index_files/css2" rel="stylesheet">
 <script src="./index_files/chart.umd.min.js"></script>
+<script src="./index_files/xlsx.full.min.js"></script>
 <style>
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:4px;border:0;background:var(--navy);color:#fff;font:700 1rem "Source Sans 3",sans-serif;padding:14px 18px;border-radius:12px;cursor:pointer}
+.dl-btn:hover{filter:brightness(1.1)}
 :root{
   --bg:#EEEEF1; --surface:#FFFFFF; --surface-2:#F5F5F9; --ink:#15134A; --muted:#5E5D7A; --line:#DCDCE6;
   --navy:#1D1980; --blue:#2593F7; --orange:#EC4A06; --gain:#1E8A52; --sel:#EAF4FF;
@@ -117,7 +120,7 @@ tr.me td{background:var(--sel);font-weight:700}
         <h2><span class="n">1</span>¿Con cuánto dinero empiezas?</h2>
         <div class="money"><span>US$</span><input id="cap" type="number" inputmode="numeric" min="0" step="100" value="1000" aria-label="Dinero para empezar"></div>
         <div class="chips" data-for="cap">
-          <button type="button" data-v="500" aria-pressed="false">$500</button><button type="button" data-v="1000" aria-pressed="false">$1,000</button><button type="button" data-v="5000" aria-pressed="false">$5,000</button><button type="button" data-v="10000" aria-pressed="false">$10,000</button>
+          <button type="button" data-v="500" aria-pressed="false">$500</button><button type="button" data-v="1000" aria-pressed="true">$1,000</button><button type="button" data-v="5000" aria-pressed="false">$5,000</button><button type="button" data-v="10000" aria-pressed="false">$10,000</button>
         </div>
       </section>
 
@@ -137,33 +140,33 @@ tr.me td{background:var(--sel);font-weight:700}
 
       <section class="step">
         <h2><span class="n">3</span>¿Por cuánto tiempo?</h2>
-        <div class="range-row"><input id="years" type="range" min="1" max="30" step="1" value="5" aria-label="Años"><output id="yearsOut">6 años</output></div>
+        <div class="range-row"><input id="years" type="range" min="1" max="30" step="1" value="5" aria-label="Años"><output id="yearsOut">5 años</output></div>
       </section>
 
       <section class="step">
         <h2><span class="n">4</span>¿Cómo quieres invertir?</h2>
         <div class="options" id="strat">
-          <button type="button" class="opt" data-s="day" style="--c:var(--blue)" aria-pressed="false"><span class="dot"></span><span><b>Day trading</b><small>Operaciones que abren y cierran el mismo día.</small></span></button>
+          <button type="button" class="opt" data-s="day" style="--c:var(--blue)" aria-pressed="true"><span class="dot"></span><span><b>Day trading</b><small>Operaciones que abren y cierran el mismo día.</small></span></button>
           <button type="button" class="opt" data-s="swing" style="--c:var(--orange)" aria-pressed="false"><span class="dot"></span><span><b>Swing</b><small>Operaciones que duran varios días o semanas.</small></span></button>
           <button type="button" class="opt" data-s="etf" style="--c:var(--navy)" aria-pressed="false"><span class="dot"></span><span><b>ETF (SPY y QQQ)</b><small>Inversión a largo plazo en las empresas más grandes de EE. UU.</small></span></button>
-          <button type="button" class="opt" data-s="combo" style="--c:var(--gain)" aria-pressed="true"><span class="dot"></span><span><b>Combinado</b><small>Repartes tu dinero entre las tres estrategias.</small></span></button>
+          <button type="button" class="opt" data-s="combo" style="--c:var(--gain)" aria-pressed="false"><span class="dot"></span><span><b>Combinado</b><small>Repartes tu dinero entre las tres estrategias.</small></span></button>
         </div>
       </section>
 
-      <section class="step" id="mixStep">
+      <section class="step" id="mixStep" hidden="">
         <h2><span class="n">5</span>¿Cómo repartes tu dinero?</h2>
-        <div class="bar" id="mixBar"><div style="width:27.77777777777778%;background:var(--blue)"></div><div style="width:22.22222222222222%;background:var(--orange)"></div><div style="width:50%;background:var(--navy)"></div></div>
-        <div class="rate"><label for="mDay"><i style="--c:var(--blue)"></i>Day trading</label><div class="range-row"><input id="mDay" type="range" min="0" max="100" step="5" value="20"><output id="mDayOut">25%</output></div></div>
+        <div class="bar" id="mixBar"><div style="width:20%;background:var(--blue)"></div><div style="width:20%;background:var(--orange)"></div><div style="width:60%;background:var(--navy)"></div></div>
+        <div class="rate"><label for="mDay"><i style="--c:var(--blue)"></i>Day trading</label><div class="range-row"><input id="mDay" type="range" min="0" max="100" step="5" value="20"><output id="mDayOut">20%</output></div></div>
         <div class="rate"><label for="mSwing"><i style="--c:var(--orange)"></i>Swing</label><div class="range-row"><input id="mSwing" type="range" min="0" max="100" step="5" value="20"><output id="mSwingOut">20%</output></div></div>
-        <div class="rate"><label for="mEtf"><i style="--c:var(--navy)"></i>ETF</label><div class="range-row"><input id="mEtf" type="range" min="0" max="100" step="5" value="60"><output id="mEtfOut">45%</output></div></div>
-        <p class="warn" id="mixWarn">Tus porcentajes suman 90%. Ajústalos para que sumen 100%; mientras tanto la calculadora los reparte en proporción.</p>
+        <div class="rate"><label for="mEtf"><i style="--c:var(--navy)"></i>ETF</label><div class="range-row"><input id="mEtf" type="range" min="0" max="100" step="5" value="60"><output id="mEtfOut">60%</output></div></div>
+        <p class="warn" id="mixWarn"></p>
       </section>
 
       <section class="step">
-        <h2><span class="n" id="rateN">6</span>¿Cuánto esperas ganar?</h2>
-        <div class="rate" id="rDay"><label for="gDay"><i style="--c:var(--blue)"></i>Day trading, ganancia por mes</label><div class="range-row"><input id="gDay" type="range" min="0" max="10" step="0.5" value="3"><output id="gDayOut">4%</output></div></div>
-        <div class="rate" id="rSwing"><label for="gSwing"><i style="--c:var(--orange)"></i>Swing, ganancia por mes</label><div class="range-row"><input id="gSwing" type="range" min="0" max="10" step="0.5" value="2"><output id="gSwingOut">2%</output></div></div>
-        <div class="rate" id="rEtf"><label for="gEtf"><i style="--c:var(--navy)"></i>ETF, ganancia por año</label><div class="range-row"><input id="gEtf" type="range" min="0" max="20" step="0.5" value="11"><output id="gEtfOut">9.5%</output></div>
+        <h2><span class="n" id="rateN">5</span>¿Cuánto esperas ganar?</h2>
+        <div class="rate" id="rDay"><label for="gDay"><i style="--c:var(--blue)"></i>Day trading, ganancia por mes</label><div class="range-row"><input id="gDay" type="range" min="0" max="10" step="0.5" value="3"><output id="gDayOut">3%</output></div></div>
+        <div class="rate" id="rSwing" hidden=""><label for="gSwing"><i style="--c:var(--orange)"></i>Swing, ganancia por mes</label><div class="range-row"><input id="gSwing" type="range" min="0" max="10" step="0.5" value="2"><output id="gSwingOut">2%</output></div></div>
+        <div class="rate" id="rEtf" hidden=""><label for="gEtf"><i style="--c:var(--navy)"></i>ETF, ganancia por año</label><div class="range-row"><input id="gEtf" type="range" min="0" max="20" step="0.5" value="11"><output id="gEtfOut">11%</output></div>
           <div class="split"><div><b>SPY</b>Las 500 empresas más grandes de EE. UU. Promedio histórico cercano al 10% anual.</div><div><b>QQQ</b>Las 100 empresas tecnológicas más grandes. Promedio histórico cercano al 13% anual.</div></div>
         </div>
         <p class="hint">Las ganancias se reinvierten cada mes, así tu dinero gana sobre lo que ya ganó (interés compuesto).</p>
@@ -172,14 +175,14 @@ tr.me td{background:var(--sel);font-weight:700}
 
     <div class="results">
       <div class="hero" aria-live="polite">
-        <div class="l" id="hL">En 6 años tendrías</div>
-        <div class="big num" id="hV">$22,190</div>
-        <div class="s" id="hS">Combinado, empezando con $450 y aportando $100 cada mes</div>
+        <div class="l" id="hL">En 5 años tendrías</div>
+        <div class="big num" id="hV">$22,197</div>
+        <div class="s" id="hS">Day trading, empezando con $1,000 y aportando $100 cada mes</div>
       </div>
       <div class="trio">
-        <div><div class="k">Lo que pusiste</div><div class="v" id="tIn">$7,650</div></div>
-        <div><div class="k">Lo que ganaste</div><div class="v pos" id="tGain">$14,540</div></div>
-        <div><div class="k">Tu dinero se multiplicó</div><div class="v" id="tMult">2.9 veces</div></div>
+        <div><div class="k">Lo que pusiste</div><div class="v" id="tIn">$7,000</div></div>
+        <div><div class="k">Lo que ganaste</div><div class="v pos" id="tGain">$15,197</div></div>
+        <div><div class="k">Tu dinero se multiplicó</div><div class="v" id="tMult">3.2 veces</div></div>
       </div>
 
       <section class="card">
@@ -191,14 +194,15 @@ tr.me td{background:var(--sel);font-weight:700}
       <section class="card">
         <h2>¿Y si inviertes de otra forma?</h2>
         <p class="sub">El mismo dinero y el mismo tiempo en cada estrategia.</p>
-        <div class="tbl"><table><thead><tr><th>Estrategia</th><th>Tendrías</th><th>Ganancia</th></tr></thead><tbody id="cmp"><tr><td>Day trading</td><td>$47,185</td><td class="pos">$39,535</td></tr><tr><td>Swing</td><td>$17,678</td><td class="pos">$10,028</td></tr><tr><td>ETF (SPY y QQQ)</td><td>$10,310</td><td class="pos">$2,660</td></tr><tr class="me"><td>Combinado</td><td>$22,190</td><td class="pos">$14,540</td></tr></tbody></table></div>
+        <div class="tbl"><table><thead><tr><th>Estrategia</th><th>Tendrías</th><th>Ganancia</th></tr></thead><tbody id="cmp"><tr class="me"><td>Day trading</td><td>$22,197</td><td class="pos">$15,197</td></tr><tr><td>Swing</td><td>$14,686</td><td class="pos">$7,686</td></tr><tr><td>ETF (SPY y QQQ)</td><td>$9,528</td><td class="pos">$2,528</td></tr><tr><td>Combinado</td><td>$13,093</td><td class="pos">$6,093</td></tr></tbody></table></div>
       </section>
 
       <section class="card">
         <h2>Año por año</h2>
-        <div class="tbl"><table><thead><tr><th>Año</th><th>Lo que pusiste</th><th>Tendrías</th><th>Ganancia</th></tr></thead><tbody id="yrs"><tr><td>1</td><td>$1,650</td><td>$1,914</td><td class="pos">$264</td></tr><tr><td>2</td><td>$2,850</td><td>$3,824</td><td class="pos">$974</td></tr><tr><td>3</td><td>$4,050</td><td>$6,384</td><td class="pos">$2,334</td></tr><tr><td>4</td><td>$5,250</td><td>$9,918</td><td class="pos">$4,668</td></tr><tr><td>5</td><td>$6,450</td><td>$14,925</td><td class="pos">$8,475</td></tr><tr><td>6</td><td>$7,650</td><td>$22,190</td><td class="pos">$14,540</td></tr></tbody></table></div>
+        <div class="tbl"><table><thead><tr><th>Año</th><th>Lo que pusiste</th><th>Tendrías</th><th>Ganancia</th></tr></thead><tbody id="yrs"><tr><td>1</td><td>$2,200</td><td>$2,845</td><td class="pos">$645</td></tr><tr><td>2</td><td>$3,400</td><td>$5,475</td><td class="pos">$2,075</td></tr><tr><td>3</td><td>$4,600</td><td>$9,226</td><td class="pos">$4,626</td></tr><tr><td>4</td><td>$5,800</td><td>$14,573</td><td class="pos">$8,773</td></tr><tr><td>5</td><td>$7,000</td><td>$22,197</td><td class="pos">$15,197</td></tr></tbody></table></div>
         <p class="note">Esta es una proyección educativa. Supone una ganancia constante, pero en la vida real hay meses buenos y meses malos. Ningún resultado está garantizado.</p>
       </section>
+      <button type="button" class="dl-btn" id="dlXlsx">⬇ Descargar en Excel</button>
     </div>
   </div>
 </div>
@@ -302,6 +306,43 @@ tr.me td{background:var(--sel);font-weight:700}
   document.querySelectorAll("#freqSeg button").forEach(function(b){b.addEventListener("click",function(){freq=+b.dataset.v;render();});});
   document.querySelectorAll("#strat .opt").forEach(function(b){b.addEventListener("click",function(){strat=b.dataset.s;render();});});
   if(window.matchMedia){var mq=matchMedia("(prefers-color-scheme: dark)");if(mq.addEventListener)mq.addEventListener("change",function(){if(chart){chart.destroy();chart=null;}render();});}
+
+  function exportXlsx(){
+    if(typeof XLSX==="undefined"){alert("No se pudo cargar el módulo de Excel. Revisa tu conexión a internet e intenta de nuevo.");return;}
+    var y=parseInt($("years").value,10), r=simulate(strat), a=mix("combo");
+    var fq={0:"Solo una vez",1:"Cada mes",3:"Cada 3 meses",12:"Cada año"}[freq];
+    var money='"US$"#,##0', pc='0.0%';
+    function sheet(rows,cols,fmt){var ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=cols.map(function(w){return{wch:w};});
+      Object.keys(ws).forEach(function(k){if(k[0]==="!")return;var c=ws[k],col=XLSX.utils.decode_cell(k).c;if(c.t==="n"&&fmt[col])c.z=fmt[col];});return ws;}
+    // Resumen
+    var res=[["Calculadora de inversión | Excedente"],[],["TUS DATOS",""],
+      ["Dinero para empezar",n("cap")],["Aportes",fq],["Monto de cada aporte",freq?n("contrib"):0],["Años",y],["Estrategia",NAMES[strat]]];
+    if(strat==="combo"){res.push(["% en Day trading",a[0]],["% en Swing",a[1]],["% en ETF",a[2]]);}
+    if(strat==="combo"||strat==="day")res.push(["Ganancia mensual Day trading",n("gDay")/100]);
+    if(strat==="combo"||strat==="swing")res.push(["Ganancia mensual Swing",n("gSwing")/100]);
+    if(strat==="combo"||strat==="etf")res.push(["Ganancia anual ETF",n("gEtf")/100]);
+    res.push([],["RESULTADO",""],["En "+y+(y===1?" año":" años")+" tendrías",r.final],["Lo que pusiste",r.put],["Lo que ganaste",r.final-r.put],["Tu dinero se multiplicó (veces)",r.put>0?Math.round(r.final/r.put*10)/10:0],
+      [],["Proyección educativa. Supone una ganancia constante; en la vida real hay meses buenos y malos. Ningún resultado está garantizado."]);
+    var ws1=XLSX.utils.aoa_to_sheet(res);ws1["!cols"]=[{wch:34},{wch:18}];
+    res.forEach(function(row,i){var c=ws1[XLSX.utils.encode_cell({r:i,c:1})];if(!c||c.t!=="n")return;
+      var l=String(row[0]);c.z=/^%|Ganancia (mensual|anual)/.test(l)?pc:/Años|veces/.test(l)?"0.0":money;if(l==="Años")c.z="0";});
+    // Comparación
+    var cmp=[["Estrategia","Tendrías","Lo que pusiste","Ganancia"]];
+    ["day","swing","etf","combo"].forEach(function(k){var x=simulate(k);cmp.push([NAMES[k]+(k===strat?" (tu elección)":""),x.final,x.put,x.final-x.put]);});
+    // Año por año
+    var yrs=[["Año","Lo que pusiste","Tendrías","Ganancia"]];
+    for(var i=1;i<=y;i++)yrs.push([i,r.ins[i*12],r.val[i*12],r.val[i*12]-r.ins[i*12]]);
+    // Mes a mes
+    var mes=[["Mes","Año","Lo que pusiste","Tendrías","Ganancia"]];
+    for(var m=0;m<=r.M;m++)mes.push([m,Math.ceil(m/12),r.ins[m],r.val[m],r.val[m]-r.ins[m]]);
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws1,"Resumen");
+    XLSX.utils.book_append_sheet(wb,sheet(cmp,[30,16,16,16],{1:money,2:money,3:money}),"Comparación");
+    XLSX.utils.book_append_sheet(wb,sheet(yrs,[8,16,16,16],{1:money,2:money,3:money}),"Año por año");
+    XLSX.utils.book_append_sheet(wb,sheet(mes,[8,8,16,16,16],{2:money,3:money,4:money}),"Mes a mes");
+    XLSX.writeFile(wb,"Calculadora_Excedente_"+NAMES[strat].split(" ")[0]+"_"+y+"anios.xlsx");
+  }
+  $("dlXlsx").addEventListener("click",exportXlsx);
   render();
 })();
 </script>
